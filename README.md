@@ -34,6 +34,10 @@ npm install
 npm run dev
 ```
 
+## openapi-generator
+
+See [openapi-generator-for-ipc-in-an-electron-application](https://axel7083.medium.com/openapi-generator-for-ipc-in-an-electron-application-bb77b703c099)
+
 ## 🐞 Debug
 
 ![electron-vite-react-debug.gif](/electron-vite-react-debug.gif)

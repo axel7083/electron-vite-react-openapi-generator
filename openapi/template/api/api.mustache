@@ -1,0 +1,63 @@
+import { ipcRenderer, IpcMain, IpcMainInvokeEvent } from 'electron'
+
+{{#imports}}
+import { {{classname}} } from '{{filename}}{{importFileExtension}}';
+{{/imports}}
+
+{{#operations}}
+
+export type ContextBridge{{classname}} = {
+  {{#operation}}
+  /**
+  {{#notes}}
+    * {{&notes}}
+  {{/notes}}
+  {{#summary}}
+    * {{&summary}}
+  {{/summary}}
+  {{#allParams}}
+    * @param {{paramName}} {{description}}
+  {{/allParams}}
+  */
+  {{operationId}}: ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}) => Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}>
+  {{/operation}}
+}
+
+export const exposedApi: ContextBridge{{classname}} = {
+  {{#operation}}
+    {{operationId}}: ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}) => ipcRenderer.invoke('{{operationId}}', {{#allParams}}{{paramName}}, {{/allParams}}),
+  {{/operation}}
+}
+
+/**
+* {{{description}}}{{^description}}no description{{/description}}
+*/
+export abstract class {{classname}} {
+  protected constructor(ipcMain: IpcMain) {
+{{#operation}}
+    ipcMain.handle(
+      '{{operationId}}',
+      (event: IpcMainInvokeEvent, {{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}) => this.{{operationId}}(event, {{#allParams}}{{paramName}}, {{/allParams}})
+    );
+{{/operation}}
+  }
+
+{{#operation}}
+    /**
+  {{#notes}}
+      * {{&notes}}
+  {{/notes}}
+  {{#summary}}
+      * {{&summary}}
+  {{/summary}}
+      * @param event
+  {{#allParams}}
+      * @param {{paramName}} {{description}}
+  {{/allParams}}
+    */
+  abstract {{operationId}}(event: IpcMainInvokeEvent, {{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}>;
+{{/operation}}
+
+}
+
+{{/operations}}

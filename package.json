@@ -13,15 +13,15 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder",
+    "generate": "openapi-generator-cli generate -g typescript -i .\\openapi\\swagger\\ipcs.yaml -t .\\openapi\\template\\ -o ./generated --global-property apis --global-property models",
+    "build": "npm run generate && tsc &&vite build && electron-builder",
     "preview": "vite preview",
     "pree2e": "vite build --mode=test",
     "e2e": "playwright test"
   },
-  "dependencies": {
-    "electron-updater": "^6.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.7.0",
     "@playwright/test": "^1.37.1",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",

@@ -1,7 +1,8 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'node:os'
 import { join } from 'node:path'
-import { update } from './update'
+import {CounterApiImpl} from './counterApi';
+
 
 // The built directory structure
 //
@@ -40,18 +41,15 @@ let win: BrowserWindow | null = null
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
-
+const counterApi = new CounterApiImpl();
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Main window',
     icon: join(process.env.VITE_PUBLIC, 'favicon.ico'),
     webPreferences: {
       preload,
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
     },
   })
 
@@ -73,9 +71,6 @@ async function createWindow() {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
-
-  // Apply electron-updater
-  update(win)
 }
 
 app.whenReady().then(createWindow)

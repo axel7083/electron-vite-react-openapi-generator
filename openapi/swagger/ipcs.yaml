@@ -1,0 +1,113 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: IPCs definition
+
+# The APIs
+paths:
+  /counter/:
+    get:
+      tags:
+        - Counter
+      operationId: getCounters
+      description: Get the counters
+      responses:
+        '200':
+          $ref: '#/components/responses/CounterList'
+    post:
+      tags:
+        - Counter
+      operationId: createCounter
+      description: Create counter with value
+      requestBody:
+        $ref: "#/components/requestBodies/Integer"
+      responses:
+        '200':
+          $ref: '#/components/responses/Counter'
+
+
+  /counter/{counterId}:
+    get:
+      tags:
+        - Counter
+      operationId: getCounter
+      parameters:
+        - $ref: '#/components/parameters/CounterId'
+      description: Get the counter object
+      responses:
+        '200':
+          $ref: '#/components/responses/Counter'
+    put:
+      tags:
+        - Counter
+      operationId: setValue
+      description: Get the counter object
+      parameters:
+        - $ref: '#/components/parameters/CounterId'
+      requestBody:
+        $ref: "#/components/requestBodies/Integer"
+      responses:
+        '200':
+          $ref: '#/components/responses/Counter'
+    delete:
+      tags:
+        - Counter
+      operationId: deleteCounter
+      description: Delete the counter object
+      parameters:
+        - $ref: '#/components/parameters/CounterId'
+      responses:
+        '200':
+          description: OK
+
+components:
+  # our object(s) definition
+  schemas:
+    Counter:
+      type: object
+      properties:
+        id:
+          type: string
+        value:
+          type: integer
+      required:
+        - id
+        - value
+
+    CounterList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Counter"
+
+  # our responses object
+  responses:
+    Counter:
+      description: Counter object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Counter'
+    CounterList:
+      description: List of counter object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CounterList'
+
+  requestBodies:
+    Integer:
+      description: Integer
+      content:
+        application/json:
+          schema:
+            type: integer
+      required: true
+
+  parameters:
+    CounterId:
+      in: path
+      name: counterId
+      schema:
+        type: string
+      required: true
+      description: Counter ID

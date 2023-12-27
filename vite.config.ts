@@ -17,7 +17,8 @@ export default defineConfig(({ command }) => {
   return {
     resolve: {
       alias: {
-        '@': path.join(__dirname, 'src')
+        '@': path.join(__dirname, 'src'),
+        '@generated': path.join(__dirname, 'generated'),
       },
     },
     plugins: [
@@ -42,7 +43,13 @@ export default defineConfig(({ command }) => {
                 external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
+            resolve: {
+              alias: {
+                '@generated': path.join(__dirname, 'generated'),
+              },
+            }
           },
+
         },
         {
           entry: 'electron/preload/index.ts',
@@ -60,6 +67,11 @@ export default defineConfig(({ command }) => {
                 external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
+            resolve: {
+              alias: {
+                '@generated': path.join(__dirname, 'generated'),
+              },
+            }
           },
         }
       ]),

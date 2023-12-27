@@ -1,3 +1,14 @@
+import { contextBridge } from 'electron'
+import { exposedApi, ContextBridgeCounterApi } from '@generated/apis/CounterApi'
+
+contextBridge.exposeInMainWorld('api', exposedApi);
+
+declare global {
+  interface Window {
+    api: ContextBridgeCounterApi
+  }
+}
+
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {
     if (condition.includes(document.readyState)) {
